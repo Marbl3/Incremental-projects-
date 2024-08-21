@@ -1,0 +1,59 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OrdinalEncoder
+from numpy import asarray
+from sklearn import preprocessing
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OrdinalEncoder
+
+df = pd.read_csv('Loan_default.csv')
+df
+
+df.isnull().sum().all()
+
+df['Education'] = df['Education'].replace("Bachelor's", "Bachelors")
+df['Education'] = df['Education'].replace("Master's", "Masters")
+df
+
+le = preprocessing.LabelEncoder()
+oe= preprocessing.OrdinalEncoder()
+
+df['LoanID'] = le.fit_transform(df['LoanID'])
+
+df['HasMortgage'] = le.fit_transform(df['HasMortgage'])
+
+df['HasDependents'] = le.fit_transform(df['HasDependents'])
+
+df['HasCoSigner'] = le.fit_transform(df['HasCoSigner'])
+
+df['Education'] = df['Education'].replace(to_replace=['High School', 'Bachelors', 'Masters', 'PhD'],
+                                          value=['0', '1', '2', '3'])
+
+df['EmploymentType'] = df['EmploymentType'].replace(to_replace=['Unemployed','Part-time','Full-time', 'Self-employed'], value=['0','1','2','3'])
+
+df['MaritalStatus'] = df['MaritalStatus'].replace(to_replace=['Divorced','Single','Married'], value=([0,1,2]))
+
+df['LoanPurpose'] = le.fit_transform(df['LoanPurpose'])
+
+df.head(2000)
+
+#df1 = df.drop(['LoanPurpose', 'Education','MaritalStatus','EmploymentType'] , axis=1)
+
+X = df1.drop(['Default'], axis=1)
+y = df1['Default']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0) # 70% training and 30% test
+
+clf = DecisionTreeClassifier()
+
+clf = clf.fit(X_train,y_train)
+
+y_pred = clf.predict(X_test)
+
+score = clf.score(X_test, y_test)
+score
